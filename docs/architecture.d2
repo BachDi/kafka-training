@@ -1,0 +1,67 @@
+Git: Github {
+  style: {
+    fill: "#f0f0f0"
+  }
+  icon: https://cdn-icons-png.flaticon.com/512/25/25231.png
+}
+
+local: Local Machine {
+  Producer
+
+  Consumer
+}
+
+terraform: Terraform Cloud {
+  shape: cloud
+  icon: https://img.icons8.com/ios/500/terraform.png
+}
+
+DO: DigitalOcean {
+  style: {
+    fill: "#f0f0f0"
+  }
+  icon: https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/DigitalOcean_logo.svg/1200px-DigitalOcean_logo.svg.png
+}
+
+droplet: DigitalOcean Droplet {
+  docker: Docker {
+    shape: image
+    icon: https://techvccloud.mediacdn.vn/2018/7/13/docker-1531468887078532266614-0-14-400-726-crop-15314688919081778546108.png
+  }
+
+  network: Docker container network {
+    style: {
+      stroke-dash: 3
+    }
+    kafka: Kafka {
+      icon: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi9Pv11C7aRTytLXz1-L5NWQE4oMIGA7U-yg&usqp=CAU
+    }
+    zookeeper: {
+      icon: https://avatars.githubusercontent.com/u/42516662?v=4&s=160
+    }
+    kafkaUI: Kafka-UI {
+      icon: https://img.stackshare.io/service/21789/default_49a504fbaa35a1b07b8f44abb9b90b8996f6068d.png
+    }
+    nginx: NginX {
+      icon: http://www.nginx.com/wp-content/uploads/2018/08/NGINX-logo-rgb-large.png
+    }
+  }
+}
+
+registry: Docker Registry {
+  shape: image
+  icon: https://blog.zachinachshon.com/assets/images/container-registry/docker-registry/docker-registry-blog-220x230.png
+}
+
+terraform -> Git: access through git provider
+local.Consumer <- droplet.network.nginX: send message
+local.Producer -> droplet.network.nginX: publish message
+droplet.network.nginx -> droplet.network.kafka: proxy pass
+droplet.network.nginx -> droplet.network.kafkaUI: proxy pass
+droplet.network.kafkaUI -> droplet.network.kafka: connect
+droplet.network.zookeeper <-> droplet.network.kafka: connect
+local -> Git
+terraform -> DO
+droplet.docker -> droplet.network: create container
+DO <-> droplet
+droplet.docker -> registry

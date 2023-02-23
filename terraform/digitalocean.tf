@@ -1,23 +1,23 @@
-terraform {
-  required_providers {
-    digitalocean = {
-      source = "digitalocean/digitalocean"
-      version = "2.26.0"
-    }
-  }
-}
+# terraform {
+#   required_providers {
+#     digitalocean = {
+#       source = "digitalocean/digitalocean"
+#       version = "2.26.0"
+#     }
+#   }
+# }
 
-variable "do_token" {
-  default = ""
-}
+# variable "do_token" {
+#   default = ""
+# }
 
-variable "ssh_public_key" {
-  description = "Public key to connect to instance through SSH"
-}
+# variable "ssh_public_key" {
+#   description = "Public key to connect to instance through SSH"
+# }
 
-variable "ssh_private_key" {
-  description = "Private key to connect to instance through SSH"
-}
+# variable "ssh_private_key" {
+#   description = "Private key to connect to instance through SSH"
+# }
 
 provider "digitalocean" {
   token = var.do_token
@@ -35,20 +35,20 @@ resource "digitalocean_droplet" "terraform-training" {
   size   = "s-1vcpu-2gb"
   ssh_keys = [digitalocean_ssh_key.default.fingerprint]
 
-  connection {
-    type        = "ssh"
-    user        = "root"
-    private_key = var.ssh_private_key
-    host        = self.ipv4_address
-  }
+  # connection {
+  #   type        = "ssh"
+  #   user        = "root"
+  #   private_key = var.ssh_private_key
+  #   host        = self.ipv4_address
+  # }
 
-  provisioner "remote-exec" {
-    inline = [
-      "mkdir -p ~/.ssh",
-      "echo '${var.ssh_public_key}' >> ~/.ssh/authorized_keys",
-      "chmod 700 ~/.ssh",
-      "chmod 600 ~/.ssh/authorized_keys",
-      "service ssh restart",
-    ]
-  } 
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "mkdir -p ~/.ssh",
+  #     "echo '${var.ssh_public_key}' >> ~/.ssh/authorized_keys",
+  #     "chmod 700 ~/.ssh",
+  #     "chmod 600 ~/.ssh/authorized_keys",
+  #     "service ssh restart",
+  #   ]
+  # } 
 }

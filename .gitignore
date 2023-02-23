@@ -1,3 +1,5 @@
 *.tfvars
 node_modules
 tf-digitalocean*
+./terraform
+*.tfstate
