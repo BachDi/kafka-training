@@ -11,7 +11,6 @@ mkdir -p ~/.ssh
 echo '${var.ssh_public_key}' >>~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
-service ssh restart
 
 # INSTALL DOCKER
 curl -fsSL https://get.docker.com -o get-docker.sh

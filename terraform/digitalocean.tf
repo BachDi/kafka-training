@@ -53,3 +53,45 @@ resource "digitalocean_droplet" "terraform-training" {
   #   ]
   # } 
 }
+
+resource "digitalocean_firewall" "terraform-training" {
+  name = "terraform-training"
+
+  droplet_ids = [digitalocean_droplet.terraform-training.id]
+
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "22"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "8080"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "9092"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "19092"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "29092"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  # inbound_rule {
+  #   protocol         = "tcp"
+  #   port_range       = "443"
+  #   source_addresses = ["0.0.0.0/0", "::/0"]
+  # }
+}
