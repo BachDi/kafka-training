@@ -1,23 +1,23 @@
-# terraform {
-#   required_providers {
-#     digitalocean = {
-#       source = "digitalocean/digitalocean"
-#       version = "2.26.0"
-#     }
-#   }
-# }
+terraform {
+  required_providers {
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "2.26.0"
+    }
+  }
+}
 
-# variable "do_token" {
-#   default = ""
-# }
+variable "do_token" {
+  default = ""
+}
 
-# variable "ssh_public_key" {
-#   description = "Public key to connect to instance through SSH"
-# }
+variable "ssh_public_key" {
+  description = "Public key to connect to instance through SSH"
+}
 
-# variable "ssh_private_key" {
-#   description = "Private key to connect to instance through SSH"
-# }
+variable "ssh_private_key" {
+  description = "Private key to connect to instance through SSH"
+}
 
 provider "digitalocean" {
   token = var.do_token
