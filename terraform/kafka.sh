@@ -1,16 +1,4 @@
 #!/bin/bash
-# CREATE SWAP
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-sudo cat /etc/fstab swap swap defaults 0 0 >>/swapfile
-
-# INSTALL SSH CONNECT
-mkdir -p ~/.ssh
-echo '${var.ssh_public_key}' >>~/.ssh/authorized_keys
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/authorized_keys
 
 # INSTALL DOCKER
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -21,7 +9,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
-#INSTALL KAFKA
+# INSTALL KAFKA, ZOOKEEPER, KAFKA-UI
 mkdir -p ~/kafka
 cd ~/kafka
 
@@ -32,6 +20,8 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0
     container_name: zookeeper
+    ports:
+      - 2181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -40,17 +30,23 @@ services:
 
   broker:
     image: confluentinc/cp-kafka:7.3.0
+    hostname: localhost
     container_name: broker
+    ports:
+      - 9092:9092
+      - 29092:29092
+      - 19092:19092
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_INTERNAL://broker:29092,PLAINTEXT_EXTERNAL://localhost:19092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
     networks:
       - kafka-network
 
@@ -58,7 +54,8 @@ services:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
     ports:
-      - '8080:8080'
+      - 8080:8080
+      - 82:8080
     restart: always
     environment:
       KAFKA_CLUSTERS_0_NAME: local
@@ -69,7 +66,7 @@ services:
       - zookeeper
     networks:
       - kafka-network
-
+  
 networks:
   kafka-network:
     driver: bridge
