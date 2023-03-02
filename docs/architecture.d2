@@ -56,7 +56,7 @@ registry: Docker Registry {
 terraform -> Git: access through git provider
 local.Consumer <- droplet.network.nginX: send message
 local.Producer -> droplet.network.nginX: publish message
-droplet.network.nginx -> droplet.network.kafka: proxy pass
+# droplet.network.nginx -> droplet.network.kafka: proxy pass
 droplet.network.nginx -> droplet.network.kafkaUI: proxy pass
 droplet.network.kafkaUI -> droplet.network.kafka: connect
 droplet.network.zookeeper <-> droplet.network.kafka: connect
